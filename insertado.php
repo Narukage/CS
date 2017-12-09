@@ -118,9 +118,8 @@ session_start();
 			    "private_key_bits" => 4096,
 			    "private_key_type" => OPENSSL_KEYTYPE_RSA,
 			);
-
+			//Get key pair
 			$res=openssl_pkey_new($config);
-			print_r($res);
 			// Get private key
 			openssl_pkey_export($res, $privatekey);
 			//Get public key
