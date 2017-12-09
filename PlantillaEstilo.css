@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway');
+
+
+/*Coloca en linea varios elementos*/
+.en-linea{
+  display: inline-flex;
+}
+
+#imagen{
+  text-align: center;
+}
+
+/*Propiedades generales*/
+body{
+  background: #F6F6F6;
+  font-family: 'Raleway';
+  color: #295e6a;
+}
+
+article{
+  margin-left: 20%;
+  margin-right: 20%;
+}
+
+h1{
+  font-size: 2em;
+  margin-top: 1%;
+  float: left;
+}
+
+h2{
+  font-size: 2em;
+  text-align: center; 
+}
+
+h3{
+  font-size: 1em;
+  text-align: center; 
+}
+
+h4{
+  font-size: 1.5em;
+  text-align: center;
+}
+
+p{
+  text-align: center;
+}
+
+button{
+  background-color: #C2FAF1;
+  color: #295e6a;
+  height: 35px;
+  cursor: pointer;
+  margin: 0 auto;
+  border: 2px solid #295e6a;
+  border-radius: 8px;
+  font-size: 24px;
+  font-family: 'Raleway';
+}
+button:hover{
+  background-color: #295e6a;
+  color:#C2FAF1;
+}
+
+#cosa{
+	background-color: #C2FAF1;
+  color: #295e6a;
+  height: 35px;
+  cursor: pointer;
+  margin: 0 auto;
+  border: 2px solid #295e6a;
+  border-radius: 8px;
+  font-size: 24px;
+  font-family: 'Raleway';
+}
+
+cosa:hover{
+	background-color: #295e6a;
+  color:#C2FAF1;
+}
+ 
+
+
+a{
+  margin-right: 10px;
+  font-size: 20px;
+  color: #295e6a;
+}
+
+a.titulo{
+}
+
+
+footer{
+  text-align: center;  
+}
+
+section{
+  text-align: center;
+}
+
+section.cabecera{
+  text-align: right;
+}
+
+.opciones{
+  text-align: left;
+}
+
+form{
+  text-align: center;
+}
+
+#logotipo{
+  margin-top: 0;
+  width: 50px;
+  height: 50px;
+}
+
+
