@@ -130,7 +130,7 @@ session_start();
 
 			openssl_private_decrypt($crypttext, $decrypted, $privatekey);
 
-      $usuario = $_SESSION["nombre"];
+      $usuario = $_SESSION["uname"];
 
       $claveRSA = fopen("data/rsa".$usuario.$_FILES["imagen"]["name"].".txt", "w")
 				or die("Unable to open file!"); //ARCHIVO .TXT QUE CONTIENE LA CLAVE AES CIFRADA CON RSA
@@ -139,6 +139,19 @@ session_start();
 			fwrite($claveRSA, $privatekey);
       fclose($claveRSA);
 
+			$crypttext = sanear_string($crypttext);
+			$publickey = sanear_string($publickey);
+
+			function sanear_string($string) {
+				$string = trim($string);
+
+				$string = str_replace(
+					array('\\', '"', '\'', ')', '(', '=', ';'),
+					array('/', '&', '&', '&', '&', '&', '&'),
+					$string
+				);
+				return $string;
+			}
 
 
 			$mysqli = @new mysqli('localhost', 'Pepe', 'pepe', 'pibd');
@@ -149,9 +162,14 @@ session_start();
 				exit;
 			}
 
+			$sentencia = "SELECT * FROM usuario WHERE usuario.NomUsuario='".$usuario."'";
 
-			$insercion = "INSERT INTO subida (Nombre, PublicRSA, AESEncryptedKey) VALUES ('".$nombre."', '".$publickey."',
-			 '".$crypttext."')";
+			$resultado = mysqli_query($mysqli,$sentencia);
+			$fila=mysqli_fetch_assoc($resultado);
+
+
+			$insercion = "INSERT INTO subida (Nombre, PublicRSA, AESEncryptedKey, IdUsuario) VALUES ('".$nombre."', '".$publickey."',
+			 '".$crypttext."','".$fila["IdUsuario"]."')";
 
 
 
