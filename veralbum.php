@@ -1,119 +1,91 @@
 <?php
-session_start();
+require_once("inc/conexion.inc.php");
 ?>
-<!DOCTYPE html>
 
-<?php include("head.php"); ?>
+<!DOCTYPE HTML>
 
-<body>
-<br>
+<!--Contiene un formulario con los datos necesarios para crear un álbum (título, descripción, fecha y país).-->
+<html lang="es">
+	<?php
+		$title= "PICSY-Ver álbum";
+		require_once("inc/head.inc.php");
+		?>
+	<body>
+			<?php
 
-<?php include("header.php"); ?>
-    
-<?php 
-        
-        $mysqli = @new mysqli('localhost', 'Pepe', 'pepe', 'pibd');
+		if(isset($_SESSION["usuario"])){
+			require_once("inc/header2.inc.php");
+				}
+		else{
+			require_once("inc/header.inc.php");
+		}
+		?>
 
-        if($mysqli->connect_errno) {
-            echo '<p>Error al conectar con la base de datos: ' . $mysqli->connect_error;
-            echo '</p>';
-            exit;
-        }
+		<ul class=navegacion>
+			<li ><a id="atras" title="Atrás" href="menuusuarioregistrado.php">Atrás</a></li>
+			<li><a href="cerrarsesion.php">Cerrar sesión</a></li>
+		</ul>
+		<br>
 
-        $cantidad = 'SELECT count(*) as numero from fotos WHERE Album="' .$_GET['idAlbum']. '"';
+				
+				<p>
+					<?php
 
-        $sentenciaAlbum = 'SELECT Titulo FROM albumes where IdAlbum="' . $_GET['idAlbum'] . '"';
-        $sentenciaFoto = 'SELECT Titulo, Fecha, Pais, IdFoto, Fichero, Descripcion, Miniatura  FROM fotos where Album="' . $_GET['idAlbum'] . '"';
+					$sentenciaIdAlbum= "SELECT * from albumes WHERE albumes.Titulo= '".$_POST['album']."'";
+					if(!($resultado = @mysqli_query($link,$sentenciaIdAlbum))) {
+						echo "<p>Error al ejecutar la sentencia <b>$sentencia</b>: " . mysqli_error($link);
+						echo '</p>';
+						exit;
+					}
+					
+					$filaIdAl= mysqli_fetch_assoc($resultado);
 
-        if(!($resultadocantidad=$mysqli->query($cantidad))) {
-            echo "<p>Error al ejecutar la sentencia <b>$sentencia</b>: ". $mysqli->error;
-            echo "</p>";
-            exit;
-        }
+					$puesto=false;
+					echo '<fieldset>';
+					if(isset($_POST['album'])){
+					 echo "<h2><legend id='informacion'> Estás viendo el álbum: ".$_POST['album']."</legend> </h2>";
+					 $sentenciaIdAlbum ="SELECT * FROM fotos, paises WHERE fotos.Album= '".$filaIdAl['idAlbum']."' AND fotos.Pais = paises.IdPais";
+					 $resultado = mysqli_query($link, $sentenciaIdAlbum);
+					 
+						while($fila=mysqli_fetch_assoc($resultado)){
+							$puesto=true;
+							
+							
+							
+							echo "	<a href=";
+							echo "detallefoto.php?id=".$fila['IdFoto'];
 
-        $cuantos = mysqli_fetch_assoc($resultadocantidad);
-        $total = $cuantos['numero'];
-        $tupla = 3;
+							echo "><img alt=".$fila['Titulo']." src='".$fila['Fichero']."'/></a>";
+							echo "<ul id='informacion'>
+								<p>
+									<b>Título: ".$fila['Titulo']."</b>
+								</p>
+								<p>
+									<b>Descripción: ".$fila['Descripcion']."</b>
+								</p>
+								<p>
+									<b>País: ".$fila['NomPais']."</b>
+								</p>
+								<p>
+									<b>Fecha: ".$fila['Fregistro']."</b>
+								</p></ul>";
+						}
+					}
+					if(!$puesto){
+					echo "<p> El álbum seleccionado no tiene fotografías todavía </p>";
+					echo "<a href='misalbumes.php' id='misalbumes'>Mis álbumes</a></li>";
+					}
 
-        $npag=$total/$tupla;
-        if(($total%$tupla)>0){
-            $npag++;
-        }
-
-        if(isset($_GET['pag'])){
-            $pag=$_GET['pag'];
-        }
-        else{
-            $pag=1;
-        }
-        if($npag>1){
-            $sentenciaFoto=$sentenciaFoto."LIMIT " . ($pag-1)*$tupla . " ,".$tupla;
-        }
-
-        if(!($resultadoAlbum = $mysqli->query($sentenciaAlbum))) {
-            echo "<p>Error al ejecutar la sentencia <b>$sentencia</b>: ". $mysqli->error;
-            echo "</p>";
-            exit;
-        }
-    
-        $titAlbum = mysqli_fetch_assoc($resultadoAlbum);
-        
-        echo 
-       " <h2>" . $titAlbum['Titulo'] . "<br></h2>
-
-        <section class='principales'>";
-    
-        if(!($resultadoFoto = $mysqli->query($sentenciaFoto))) {
-            echo "<p>Error al ejecutar la sentencia <b>$sentenciaFoto</b>: ". $mysqli->error;
-            echo "</p>";
-            exit;
-        }
-    
+					echo '</fieldset>';
+					?>
+				</p>
 
 
+	<?php
 
-        while($dataF = $resultadoFoto->fetch_assoc()) {
-            
-            $sentenciaPais = 'SELECT NomPais FROM paises WHERE IdPais="' . $dataF['Pais'] . '"';
-            if(!($resultadoPais = $mysqli->query($sentenciaPais))) {
-            echo "<p>Error al ejecutar la sentencia <b>$sentencia</b>: ". $mysqli->error;
-            echo "</p>";
-            exit;
-            }
-            $nombreP = mysqli_fetch_assoc($resultadoPais);
-            
-            echo "<a href='fotodetalle.php?id=" . $dataF['IdFoto'] . "'><img  src='" . $dataF['Miniatura'] . "' alt='" . $dataF['Descripcion'] . "'></a>
-            <br><br><br>";
-            echo "<p><b>Title:</b> " . $dataF['Titulo'] . "<br>";
-            echo "<b>Date:</b> " . $dataF['Fecha'] . "<br>";
-            echo "<b>Country:</b> " . $nombreP['NomPais'] . "<br><br><br>";
+		require_once("inc/footer.inc.php");
+		?>
+	</body>
 
-            }
-
-        if($pag>1){
-
-            echo "<a href='veralbum.php?idAlbum=". $_GET['idAlbum'] . "&pag=" . ($pag-1) ."'>Go back</a> // ";
-
-        }
-
-        echo "Page " . $pag;
-
-        if($pag<$npag){
-
-            echo " // <a href='veralbum.php?idAlbum=". $_GET['idAlbum'] . "&pag=" . ($pag+1) ."'>Go ahead</a>";
-
-        }
-
-        echo "</p></section>";
-        
-        
-
-    ?>
-    
-</body>
-
-<br><br><br>
-    
-<?php include("footer.php"); ?>
-
+</html>
 </html>

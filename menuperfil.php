@@ -45,6 +45,7 @@ session_start();
             </p>
 
         <a id = 'enlacesperfil' class='hvr-grow' href='insertararchivo.php'>Sube un archivo</a>
+		<a id = 'enlacesperfil' class='hvr-grow' href='listadoarchivos.php'>Archivos subidos</a>
         <a id = 'enlacesperfil' class='hvr-grow' href='misdatos.php'>Información personal</a>
         <a id = 'enlacesperfil' class='hvr-grow' href='confirmaborrar.php'>Borrar cuenta</a>
         

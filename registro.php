@@ -1,68 +1,94 @@
 <?php
-session_start();
+require_once("inc/conexion.inc.php");
+
 ?>
-<!DOCTYPE html>
+
+<!DOCTYPE HTML>
 <html lang="es">
 
-<?php include("head.php"); ?>
+	<?php
+		$title= "PICSY-Registro";
+		require_once("inc/head.inc.php");
+		?>
 
-<body>
-<br>
+	<body>
 
-<?php include("header.php"); ?>
-<h3>Regístrate</h3>
-    
-<section class="principales">   
-<form method="POST" action="formularioregistro.php">
+	<?php
 
-     <label class="en-linea">Nombre de usuario:</label>
-     <input class="input-registro" type="text" name="Nick">
-     <br><br>
-     <label class="en-linea">Email:</label>
-     <input class="input-registro" type="text" name="Mail">
-     <br><br>
-     <label class="en-linea">Contraseña:</label>
-     <input class="input-registro" type="password" name="Contrasenya" title="">
-     <br><br>
-     <label class="en-linea">Repita la contraseña:</label>
-     <input class="input-registro" type="password" name="Contrasenya2">
-     <br><br>
-     <label>Gender:</label>
-     <input class="altinput" type="radio" name="Genero" value="0">
-     <label for="genero1">Mujer</label>
-     <input class="altinput" type="radio" name="Genero" value="1">
-     <label for="genero2">Hombre</label>
-     <input class="altinput" type="radio" name="Genero" value="2">
-     <label for="genero3">Otros</label>
-     <br><br><br>
-     <label>Fecha de nacimiento </label>
-     <input class="input-registro" type="date" name="fechaNac">
-<br><br>
-    
-  <label>Lugar de nacimiento</label>
-    
-<select name="pais">
-     <?php 
-          include 'utilidades.php';
-          $arraypaises = Utilidades::obtenerPaises();
-          foreach ($arraypaises as $idpais => $nompais) {
-               echo '<option value="'.$idpais.'">'.$nompais.'</option>';
-          }
-     ?>
-</select>
-<br><br>
+		if(isset($_SESSION["usuario"])){
 
-<label class="en-linea">Lugar de residencia:</label>
-     <input class="input-registro" type="text" name="ciudad">
-     <br><br>
-<br>
-<br>
+			require_once("inc/header2.inc.php");
 
-<button type="submit" name="Submit">Registra</button>
-</form>
-</section>
-  
-</body>
-<br><br><br>
-<?php include("footer.php"); ?>
+		}else{
+			require_once("inc/header.inc.php");
+		}
+		?>
+
+		<h2 class="titulos">Registro</h2>
+
+		<form enctype="multipart/form-data" id="registro" action="nuevoregistro.php" method="POST">
+			<fieldset title="Formulario de registro">
+				<legend id="regis">Datos de usuario</legend>
+				<p>
+					<label for="nombre">Nombre de usuario:</label> <input type="text" id="nombre" name="nombre" required  >
+				</p>
+				<p>
+					<label for="contraseña">Contraseña:</label> <input type="password" name="contra" id="contraseña" required>
+				</p>
+				<p>
+					<label for="repetir">Repetir contraseña:</label> <input type="password" name="contra2" id="repetir" required>
+				</p>
+				<p>
+					<label for="correo" id="email">Email:</label> <input type="email" name="email" placeholder="miusuario@hotmail.com" id="correo" required >
+				</p>
+
+				<p>
+					Sexo:
+				</p>
+				<p>
+					<label>Hombre<input type="radio" name="sexo" value="Hombre" checked required > </label>
+					<label>Mujer<input type="radio" name="sexo" value="Mujer" required > </label>
+				</p>
+				<p>
+					<label for="nacimiento">Fecha de nacimiento:</label> <input type="date" name="fecha" id="nacimiento" required />
+				</p>
+				<p>
+					<label for="ciudad">Ciudad:</label> <input type="text" id="ciudad" name="ciudad">
+				</p>
+				<p>
+				<label class="labelForm" for="pais">País</label>
+				<select name="pais" id="pais">
+					<?php
+
+	            	$sentencia= 'SELECT * FROM paises';
+
+	            	$resultado = mysqli_query($link, $sentencia);
+
+						echo "<option value=''></option>";
+
+						while($fila=mysqli_fetch_assoc($resultado)){
+							echo "<option value=".$fila['IdPais'].">".$fila['NomPais']."</option>";
+						}
+
+						mysqli_free_result($resultado);
+					?>
+				</select>
+				</p>
+				<p>
+					<label for="foto">Foto de perfil:</label> <input type="file" name="foto" id="foto" accept="" required>
+				</p>
+				<p>
+					<input title="Crear usuario" type="submit" value="Registrarme" class="centrado" >
+				</p>
+			</fieldset>
+				</form>
+
+	<?php
+
+		require_once("inc/footer.inc.php");
+		mysqli_close($link);
+		?>
+
+	</body>
+
 </html>
